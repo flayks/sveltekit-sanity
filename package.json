@@ -1,0 +1,77 @@
+{
+    "name": "@flayks/sveltekit-sanity",
+    "version": "0.1.0",
+    "description": "Sanity for SvelteKit (unofficial): typed queries, draft preview and live visual editing",
+    "keywords": [
+        "live-preview",
+        "presentation",
+        "sanity",
+        "svelte",
+        "sveltekit",
+        "visual-editing"
+    ],
+    "license": "MIT",
+    "author": "Félix Péault <hello@flayks.com> (https://flayks.com)",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/flayks/sveltekit-sanity.git"
+    },
+    "files": [
+        "dist"
+    ],
+    "type": "module",
+    "sideEffects": false,
+    "svelte": "./dist/index.js",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "browser": "./dist/client.js",
+            "svelte": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "svelte-package -i src -o dist && publint",
+        "check": "svelte-check --tsconfig ./tsconfig.json",
+        "format": "oxfmt",
+        "lint": "oxlint",
+        "prepublishOnly": "npm run build",
+        "test": "node --test test/*.test.ts",
+        "watch": "svelte-package -i src -o dist -w"
+    },
+    "dependencies": {
+        "@sanity/core-loader": "^2.3.0",
+        "@sanity/presentation-comlink": "^2.2.3",
+        "@sanity/preview-url-secret": "^4.1.5",
+        "@sanity/visual-editing": "^6.2.0"
+    },
+    "devDependencies": {
+        "@sanity/client": "^8.11.0",
+        "@semantic-release/changelog": "^7.0.0",
+        "@semantic-release/commit-analyzer": "^13.0.1",
+        "@semantic-release/git": "^11.0.1",
+        "@semantic-release/github": "^12.0.10",
+        "@semantic-release/npm": "^13.2.0",
+        "@semantic-release/release-notes-generator": "^14.1.1",
+        "@sveltejs/kit": "^3.1.0",
+        "@sveltejs/package": "^3.0.1",
+        "@sveltejs/vite-plugin-svelte": "^7.3.1",
+        "oxfmt": "^0.74.0",
+        "oxlint": "^1.89.0",
+        "publint": "^0.3.25",
+        "semantic-release": "^25.0.9",
+        "svelte": "^5.57.2",
+        "svelte-check": "^4.7.7",
+        "typescript": "^6",
+        "vite": "^8.3.5"
+    },
+    "peerDependencies": {
+        "@sanity/client": "^8.11.0",
+        "@sveltejs/kit": "^3.0.0",
+        "svelte": "^5.7.0"
+    }
+}

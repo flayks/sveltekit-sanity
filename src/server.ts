@@ -12,6 +12,8 @@ export type SanityConfig = {
     /** Viewer token, stays on the server */
     token: string
     previewPaths?: { enable?: string; disable?: string }
+    /** Perspective outside preview, like `drafts` in dev */
+    defaultPerspective?: ClientPerspective
 }
 
 const COOKIE = '__sanity_preview'
@@ -31,13 +33,24 @@ const hash = async (value: string) => {
 }
 
 /** Clients and the `handle` hook for one Sanity project */
-export const createSanity = ({ projectId, dataset, apiVersion = '2025-12-06', studioUrl, token, previewPaths = {} }: SanityConfig) => {
+export const createSanity = ({
+    projectId,
+    dataset,
+    apiVersion = '2025-12-06',
+    studioUrl,
+    token,
+    previewPaths = {},
+    defaultPerspective = 'published'
+}: SanityConfig) => {
     // Empty token would make a guessable preview cookie
     if (!token) throw new Error('createSanity: missing token')
 
     const { enable = '/preview/enable', disable = '/preview/disable' } = previewPaths
     const client = createClient({ projectId, dataset, apiVersion, token, useCdn: true, stega: { studioUrl } })
     const previewClient = client.withConfig({ useCdn: false, stega: true })
+    const isDefaultPublished = defaultPerspective === 'published'
+    // CDN only serves published content
+    const defaultClient = isDefaultPublished ? client : client.withConfig({ useCdn: false, perspective: defaultPerspective })
 
     // Same value in every server instance, unlike a random secret
     const secret = hash(token)
@@ -77,14 +90,14 @@ export const createSanity = ({ projectId, dataset, apiVersion = '2025-12-06', st
 
         const perspective = preview ? toPerspective(cookies.get(perspectiveCookieName)) : undefined
         event.locals.preview = preview
-        event.locals.sanity = perspective ? previewClient.withConfig({ perspective }) : client
+        event.locals.sanity = perspective ? previewClient.withConfig({ perspective }) : defaultClient
         event.locals.visualEditing = perspective
             ? { projectId, dataset, apiVersion, studioUrl, enablePath: enable, disablePath: disable, perspective: String(perspective) }
             : null
 
         const response = await resolve(event)
         // Drafts must never land in a shared cache
-        if (preview) response.headers.set('cache-control', 'private, no-store')
+        if (preview || !isDefaultPublished) response.headers.set('cache-control', 'private, no-store')
         return response
     }
 

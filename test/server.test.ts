@@ -42,6 +42,16 @@ test('preview gets drafts and is never cached', async () => {
     assert.equal(response.headers.get('cache-control'), 'private, no-store')
 })
 
+test('default perspective is not cached', async () => {
+    const drafts = createSanity({ projectId: 'abc', dataset: 'production', studioUrl: 'https://studio.test', token, defaultPerspective: 'drafts' })
+    const event = { url: new URL('https://site.test/'), cookies: { get: () => undefined }, locals: {} as App.Locals }
+    const response = await drafts.handle({ event, resolve: async () => new Response('ok') } as never)
+    assert.equal(event.locals.preview, false)
+    assert.equal(event.locals.visualEditing, null)
+    assert.equal(event.locals.sanity.config().perspective, 'drafts')
+    assert.equal(response.headers.get('cache-control'), 'private, no-store')
+})
+
 test('disable only redirects to same-site paths', async () => {
     await assert.rejects(run('/preview/disable?redirect=/work'), { status: 307, location: '/work' })
     await assert.rejects(run('/preview/disable?redirect=https://evil.test'), { status: 307, location: '/' })

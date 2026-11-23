@@ -36,7 +36,7 @@ export const sanity = createSanity({
 })
 ```
 
-Optional: `apiVersion` (default `2025-12-06`) and `previewPaths` (default `/preview/enable` and `/preview/disable`).
+Optional: `apiVersion` (default `2025-12-06`), `previewPaths` (default `/preview/enable` and `/preview/disable`) and `defaultPerspective` (default `published`). Set `defaultPerspective: dev ? 'drafts' : 'published'` to see drafts on localhost without Presentation.
 
 **2. Hook**, which also serves the preview paths
 

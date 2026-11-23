@@ -1,12 +1,12 @@
 <script lang="ts">
     import { browser } from '$app/env'
-    import type { VisualEditingConfig } from './types.js'
+    import type { OverlayOptions, VisualEditingConfig } from './types.js'
 
-    let { config }: { config: VisualEditingConfig | null | undefined } = $props()
+    let { config, options }: { config: VisualEditingConfig | null | undefined; options?: OverlayOptions } = $props()
 </script>
 
 {#if browser && config}
     {#await import('./Presentation.svelte') then { default: Presentation }}
-        <Presentation {config} />
+        <Presentation {config} {options} />
     {/await}
 {/if}

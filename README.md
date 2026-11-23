@@ -82,6 +82,8 @@ export const load = async ({ locals }) => ({
 
 `VisualEditing` renders nothing for visitors and loads only in preview.
 
+Use `options` to set overlay options, for example `<VisualEditing config={data.visualEditing} options={{ zIndex: 100, onSuspiciousStega: console.warn }} />`.
+
 **4. Studio**: point the Presentation tool to your site
 
 ```ts
@@ -140,7 +142,7 @@ export const load = async ({ params }) => {
 {/each}
 ```
 
-- `defineQuery` lets TypeGen type `data`
+- `defineQuery` lets TypeGen type `data`. With branded `.groq` queries, `loadQuery` also checks `params`
 - `data-sanity` on array items gives overlays and drag-and-drop reordering in Presentation, empty for visitors
 - `stegaClean` strips the invisible editing markers before using a string for logic, like a class name
 

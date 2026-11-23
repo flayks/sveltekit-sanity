@@ -1,8 +1,9 @@
 import { getRequestEvent } from '$app/server'
-import type { QueryParams } from '@sanity/client'
+import type { ClientParams, QueryParams } from '@sanity/client'
 
 /** Fetch with the request client, keeping what live mode needs */
-export const loadQuery = async <const Q extends string>(query: Q, params: QueryParams = {}) => {
+export const loadQuery = async <const Q extends string>(query: Q, queryParams?: ClientParams<Q>) => {
+    const params: QueryParams = queryParams ?? {}
     const { locals } = getRequestEvent()
     if (!locals.visualEditing) return { query, params, data: await locals.sanity.fetch(query, params) }
 

@@ -5,9 +5,9 @@
     import { isMaybePresentation } from '@sanity/presentation-comlink'
     import { enableVisualEditing, type HistoryAdapterNavigate } from '@sanity/visual-editing'
     import { enableLiveMode } from './live.js'
-    import type { VisualEditingConfig } from './types.js'
+    import type { OverlayOptions, VisualEditingConfig } from './types.js'
 
-    let { config }: { config: VisualEditingConfig } = $props()
+    let { config, options }: { config: VisualEditingConfig; options?: OverlayOptions } = $props()
 
     let navigate: HistoryAdapterNavigate | undefined
     let fromStudio = false
@@ -28,6 +28,7 @@
         })
 
         const disableVisualEditing = enableVisualEditing({
+            ...options,
             history: {
                 subscribe: (_navigate) => {
                     navigate = _navigate
